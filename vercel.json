@@ -2,16 +2,5 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "buildCommand": "npm run build --workspace web",
   "outputDirectory": "apps/web/dist",
-  "installCommand": "npm install",
-  "functions": {
-    "apps/api/src/index.js": {
-      "runtime": "nodejs20.x"
-    }
-  },
-  "rewrites": [
-    {
-      "source": "/api/(.*)",
-      "destination": "/apps/api/src/index.js"
-    }
-  ]
+  "installCommand": "npm install"
 }
