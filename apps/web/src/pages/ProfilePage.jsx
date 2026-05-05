@@ -56,7 +56,7 @@ export default function ProfilePage() {
               <User size={28} className="text-white" />
             </div>
             <div className="flex-1">
-              <h2 className="text-lg font-semibold text-surface-900">Arjun Mehta</h2>
+              <h2 className="text-lg font-semibold text-surface-900">Rishav Ghosh</h2>
               <p className="text-sm text-surface-500">Platinum Member since 2021</p>
               <div className="flex items-center gap-1.5 mt-1">
                 <div className="w-2 h-2 rounded-full bg-accent-500" />

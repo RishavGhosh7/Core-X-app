@@ -1,7 +1,7 @@
 export const users = [
   {
     id: "user_amex_1",
-    name: "Riya Chen",
+    name: "Rishav Ghosh",
     verticalAffinity: {
       DINING: 1.25,
       TRAVEL: 1.15,

@@ -153,7 +153,18 @@ export default function ExpensesPage({ backend }) {
                           <button className="text-[10px] px-2 py-0.5 rounded-md border border-amber-200 text-amber-700" onClick={() => backend?.actions?.autoReconcile(expense.intentId)}>
                             Verify policy
                           </button>
-                          <button className="text-[10px] px-2 py-0.5 rounded-md border border-primary-200 text-primary-700" onClick={() => (receiptFile ? onUpload(expense.intentId) : backend?.actions?.scanAutoSubmit(expense.intentId))}>
+                          <button
+                            className="text-[10px] px-2 py-0.5 rounded-md border border-primary-200 text-primary-700"
+                            onClick={() =>
+                              receiptFile
+                                ? onUpload(expense.intentId)
+                                : backend?.actions?.scanAutoSubmit(expense.intentId, {
+                                    merchant: expense.merchant,
+                                    amount: Number(expense.amount || 0) / 100,
+                                    vertical: expense.category
+                                  })
+                            }
+                          >
                             Scan + auto-submit
                           </button>
                         </>
