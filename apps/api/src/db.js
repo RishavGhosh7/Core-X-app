@@ -1,7 +1,8 @@
 import { Pool } from "pg";
 
 const databaseUrl = process.env.DATABASE_URL || "";
-const hasDatabase = Boolean(databaseUrl);
+const databaseOptIn = process.env.ENABLE_DATABASE === "true";
+const hasDatabase = Boolean(databaseUrl) && databaseOptIn;
 
 const pool = hasDatabase
   ? new Pool({
