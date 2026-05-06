@@ -10,7 +10,10 @@ import {
   Eye,
   Smartphone,
   Globe,
-  User
+  User,
+  TrendingUp,
+  AlertCircle,
+  Lightbulb
 } from "lucide-react";
 import { cards } from "../data/mockData";
 
@@ -40,17 +43,28 @@ const menuSections = [
   }
 ];
 
-export default function ProfilePage() {
+const insightIconMap = {
+  TrendingUp,
+  AlertCircle,
+  Lightbulb
+};
+
+export default function ProfilePage({ backend }) {
+  const personalizedInsights = Array.isArray(backend?.personalizedInsights) ? backend.personalizedInsights : [];
+  const hasPersonalizedInsights = personalizedInsights.length > 0;
+  const topInsight = hasPersonalizedInsights ? personalizedInsights[0] : null;
+
   return (
     <div className="animate-fade-in">
       <div className="sticky top-0 z-40 glass border-b border-gray-100/60">
-        <div className="max-w-lg mx-auto px-5 py-4">
+        <div className="max-w-[1200px] mx-auto px-5 py-4">
           <h1 className="text-xl font-semibold text-surface-900">Profile</h1>
         </div>
       </div>
 
-      <div className="max-w-lg mx-auto px-5 space-y-5 mt-4">
-        <div className="animate-slide-up stagger-1 bg-white rounded-2xl p-5 shadow-card">
+      <div className="max-w-[1200px] mx-auto px-5 mt-4 grid gap-6 lg:grid-cols-[360px_minmax(0,1fr)]">
+        <div className="space-y-5">
+          <div className="animate-slide-up stagger-1 bg-white rounded-2xl p-5 shadow-card">
           <div className="flex items-center gap-4">
             <div className="w-16 h-16 rounded-2xl gradient-primary flex items-center justify-center shadow-lg">
               <User size={28} className="text-white" />
@@ -64,51 +78,78 @@ export default function ProfilePage() {
               </div>
             </div>
           </div>
-        </div>
+          </div>
 
-        <div className="animate-slide-up stagger-2">
-          <button className="w-full bg-white rounded-2xl p-4 shadow-card">
+          <div className="animate-slide-up stagger-2">
+            <button className="w-full bg-white rounded-2xl p-4 shadow-card">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-primary-50 flex items-center justify-center">
                 <MessageCircle size={20} className="text-primary-600" />
               </div>
               <div className="flex-1 text-left">
                 <p className="text-sm font-semibold text-surface-900">AI Assistant</p>
-                <p className="text-xs text-surface-500">Ask about spending, offers, or travel</p>
+                <p className="text-xs text-surface-500">
+                  {topInsight?.title || "Ask about spending, offers, or travel"}
+                </p>
               </div>
               <ChevronRight size={16} className="text-surface-400" />
             </div>
-          </button>
-        </div>
+            </button>
+          </div>
 
-        {menuSections.map((section, sectionIndex) => (
-          <div key={section.title} className={`animate-slide-up stagger-${sectionIndex + 3}`}>
-            <h3 className="text-xs font-semibold text-surface-500 uppercase tracking-wider mb-2 px-1">{section.title}</h3>
-            <div className="bg-white rounded-2xl shadow-card overflow-hidden divide-y divide-gray-50">
-              {section.items.map((item) => {
-                const Icon = item.icon;
+          {hasPersonalizedInsights && (
+            <div className="animate-slide-up stagger-2 bg-white rounded-2xl p-4 shadow-card space-y-2.5">
+              <p className="text-xs font-semibold text-surface-500 uppercase tracking-wider">AI Assistant Insights</p>
+              {personalizedInsights.slice(0, 3).map((insight) => {
+                const Icon = insightIconMap[insight.icon] || TrendingUp;
                 return (
-                  <button key={item.label} className="w-full flex items-center gap-3 px-4 py-3.5 hover:bg-gray-50/50">
-                    <div className={`w-9 h-9 rounded-lg ${item.color} flex items-center justify-center flex-shrink-0`}>
-                      <Icon size={16} />
+                  <div key={insight.id} className="rounded-xl border border-gray-100 p-3">
+                    <div className="flex items-start gap-2">
+                      <div className="w-7 h-7 rounded-lg bg-primary-50 text-primary-600 flex items-center justify-center flex-shrink-0">
+                        <Icon size={14} />
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-sm font-medium text-surface-900">{insight.title}</p>
+                        <p className="text-xs text-surface-500 mt-0.5">{insight.description}</p>
+                      </div>
                     </div>
-                    <div className="flex-1 text-left min-w-0">
-                      <p className="text-sm font-medium text-surface-900">{item.label}</p>
-                      {item.detail && <p className="text-xs text-surface-500 mt-0.5">{item.detail}</p>}
-                    </div>
-                    <ChevronRight size={16} className="text-surface-300 flex-shrink-0" />
-                  </button>
+                  </div>
                 );
               })}
             </div>
-          </div>
-        ))}
+          )}
+        </div>
 
-        <div className="animate-slide-up pt-2 pb-4">
-          <button className="w-full flex items-center justify-center gap-2 py-3 text-red-500 hover:text-red-600 transition-colors">
-            <LogOut size={16} />
-            <span className="text-sm font-medium">Sign Out</span>
-          </button>
+        <div className="space-y-5">
+          {menuSections.map((section, sectionIndex) => (
+            <div key={section.title} className={`animate-slide-up stagger-${sectionIndex + 3}`}>
+              <h3 className="text-xs font-semibold text-surface-500 uppercase tracking-wider mb-2 px-1">{section.title}</h3>
+              <div className="bg-white rounded-2xl shadow-card overflow-hidden divide-y divide-gray-50">
+                {section.items.map((item) => {
+                  const Icon = item.icon;
+                  return (
+                    <button key={item.label} className="w-full flex items-center gap-3 px-4 py-3.5 hover:bg-gray-50/50">
+                      <div className={`w-9 h-9 rounded-lg ${item.color} flex items-center justify-center flex-shrink-0`}>
+                        <Icon size={16} />
+                      </div>
+                      <div className="flex-1 text-left min-w-0">
+                        <p className="text-sm font-medium text-surface-900">{item.label}</p>
+                        {item.detail && <p className="text-xs text-surface-500 mt-0.5">{item.detail}</p>}
+                      </div>
+                      <ChevronRight size={16} className="text-surface-300 flex-shrink-0" />
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
+
+          <div className="animate-slide-up pt-2 pb-4">
+            <button className="w-full flex items-center justify-center gap-2 py-3 text-red-500 hover:text-red-600 transition-colors">
+              <LogOut size={16} />
+              <span className="text-sm font-medium">Sign Out</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>

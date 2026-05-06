@@ -73,6 +73,11 @@ export function useBackendData() {
   const [realtime, setRealtime] = useState({ version: 0, lastEvaluation: null, latestOffers: [], events: [] });
   const [error, setError] = useState("");
   const [lastExplanation, setLastExplanation] = useState(null);
+  const [conciergeSession, setConciergeSession] = useState(null);
+  const [cards, setCards] = useState([]);
+  const [redeemedOfferIds, setRedeemedOfferIds] = useState([]);
+  const [availablePoints, setAvailablePoints] = useState(0);
+  const [personalizedInsights, setPersonalizedInsights] = useState([]);
 
   const refreshBootstrap = useCallback(async () => {
     const response = await fetch("/api/bootstrap");
@@ -87,6 +92,16 @@ export function useBackendData() {
       return looksReset ? prev : data;
     });
     return data;
+  }, []);
+
+  const resetBootstrap = useCallback(async () => {
+    const response = await fetch("/api/bootstrap/reset", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId: "user_amex_1" })
+    });
+    await parseApiResponse(response, "Unable to reset bootstrap data");
+    setBootstrap(defaultBootstrapState());
   }, []);
 
   const refreshRealtime = useCallback(async () => {
@@ -105,11 +120,82 @@ export function useBackendData() {
   }, [refreshBootstrap, refreshRealtime]);
 
   useEffect(() => {
+    const timer = setTimeout(() => {
+      resetBootstrap()
+        .then(() => Promise.all([refreshBootstrap(), refreshRealtime()]))
+        .catch(() => {});
+    }, 0);
+    return () => clearTimeout(timer);
+  }, [resetBootstrap, refreshBootstrap, refreshRealtime]);
+
+  useEffect(() => {
     const id = setInterval(() => {
       refreshRealtime().catch(() => {});
     }, 3000);
     return () => clearInterval(id);
   }, [refreshRealtime]);
+
+  const refreshCards = useCallback(async () => {
+    const response = await fetch("/api/cards?userId=user_amex_1");
+    const data = await parseApiResponse(response, "Unable to load cards");
+    setCards(data?.items || []);
+    return data?.items || [];
+  }, []);
+
+  const refreshPersonalizedInsights = useCallback(async () => {
+    const response = await fetch("/api/insights/personalized?userId=user_amex_1");
+    const data = await parseApiResponse(response, "Unable to load personalized insights");
+    setPersonalizedInsights(Array.isArray(data?.insights) ? data.insights : []);
+    return data;
+  }, []);
+
+  const resetCards = useCallback(async () => {
+    const response = await fetch("/api/cards/reset", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId: "user_amex_1" })
+    });
+    const data = await parseApiResponse(response, "Unable to reset cards");
+    setCards(data?.items || []);
+    return data?.items || [];
+  }, []);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      resetCards().catch(() => {});
+    }, 0);
+    return () => clearTimeout(timer);
+  }, [resetCards]);
+
+  const refreshRedeemedOffers = useCallback(async () => {
+    const response = await fetch("/api/rewards/redemptions?userId=user_amex_1");
+    const data = await parseApiResponse(response, "Unable to load redeemed offers");
+    setRedeemedOfferIds(data?.offerIds || []);
+    return data?.offerIds || [];
+  }, []);
+
+  const resetRewards = useCallback(async () => {
+    const response = await fetch("/api/rewards/reset", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId: "user_amex_1" })
+    });
+    const data = await parseApiResponse(response, "Unable to reset rewards");
+    setRedeemedOfferIds(data?.offerIds || []);
+    setAvailablePoints(Number(data?.pointsBalance || 0));
+    return data;
+  }, []);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      resetRewards().catch(() => {});
+    }, 0);
+    return () => clearTimeout(timer);
+  }, [resetRewards]);
+
+  useEffect(() => {
+    refreshPersonalizedInsights().catch(() => {});
+  }, [refreshPersonalizedInsights]);
 
   const createIntent = useCallback(
     async (payload) => {
@@ -132,17 +218,18 @@ export function useBackendData() {
         },
         latestOffers: data.offers || prev?.latestOffers || []
       }));
+      refreshPersonalizedInsights().catch(() => {});
       return data;
     },
-    []
+    [refreshPersonalizedInsights]
   );
 
   const runAutonomousPay = useCallback(
-    async () => {
+    async (payload = {}) => {
       const response = await fetch("/api/agents/autonomous-pay", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId: "user_amex_1" })
+        body: JSON.stringify({ userId: "user_amex_1", ...payload })
       });
       const data = await parseApiResponse(response, "Autonomous payment failed");
       if (data?.explanation) setLastExplanation(data.explanation);
@@ -158,9 +245,10 @@ export function useBackendData() {
         },
         latestOffers: data.offers || prev?.latestOffers || []
       }));
+      refreshPersonalizedInsights().catch(() => {});
       return data;
     },
-    []
+    [refreshPersonalizedInsights]
   );
 
   const uploadReceipt = useCallback(
@@ -186,9 +274,10 @@ export function useBackendData() {
           : prev?.lastEvaluation || null,
         latestOffers: data.offers || prev?.latestOffers || []
       }));
+      refreshPersonalizedInsights().catch(() => {});
       return data;
     },
-    []
+    [refreshPersonalizedInsights]
   );
 
   const autoReconcile = useCallback(
@@ -251,16 +340,132 @@ export function useBackendData() {
         },
         latestOffers: data.offers || prev?.latestOffers || []
       }));
+      refreshPersonalizedInsights().catch(() => {});
       return data;
     },
-    [createIntent]
+    [createIntent, refreshPersonalizedInsights]
   );
+
+  const redeemRewards = useCallback(async (context = "TRAVEL") => {
+    const response = await fetch("/api/rewards/redeem-options", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId: "user_amex_1", context })
+    });
+    const data = await parseApiResponse(response, "Failed to load rewards redemption options");
+    setAvailablePoints(Number(data.pointsBalance || 0));
+    setLastExplanation({
+      source: "rewards",
+      severity: "low",
+      text: `You have ${Number(data.pointsBalance || 0).toLocaleString("en-IN")} points ready to redeem.`,
+      suggestion: data.nextBestAction || "Open offers to redeem rewards."
+    });
+    return data;
+  }, []);
+
+  const redeemOffer = useCallback(async (offerId) => {
+    const response = await fetch(`/api/offers/${encodeURIComponent(offerId)}/redeem`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId: "user_amex_1" })
+    });
+    const data = await parseApiResponse(response, "Failed to redeem offer");
+    setRedeemedOfferIds((prev) => (prev.includes(offerId) ? prev : [offerId, ...prev]));
+    setAvailablePoints(Number(data.pointsBalance || 0));
+    setLastExplanation({
+      source: "rewards",
+      severity: "low",
+      text: `Offer redeemed successfully. ${Number(data.pointsSpent || 0).toLocaleString("en-IN")} points were used.`,
+      suggestion: `Remaining points: ${Number(data.pointsBalance || 0).toLocaleString("en-IN")}`
+    });
+    return data;
+  }, []);
+
+  const startConciergeChat = useCallback(async (topic = "premium_travel_assistance") => {
+    const response = await fetch("/api/concierge/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId: "user_amex_1", topic })
+    });
+    const data = await parseApiResponse(response, "Failed to start concierge chat");
+    setConciergeSession(data);
+    setLastExplanation({
+      source: "concierge",
+      severity: "low",
+      text: data.openingMessage || "Concierge chat is now available.",
+      suggestion: "Open profile to continue the concierge conversation."
+    });
+    return data;
+  }, []);
+
+  const createCard = useCallback(async (payload) => {
+    const response = await fetch("/api/cards", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId: "user_amex_1", ...payload })
+    });
+    const data = await parseApiResponse(response, "Failed to create card");
+    setCards((prev) => [data.item, ...prev]);
+    return data.item;
+  }, []);
+
+  const updateCard = useCallback(async (cardId, payload) => {
+    const response = await fetch(`/api/cards/${cardId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId: "user_amex_1", ...payload })
+    });
+    const data = await parseApiResponse(response, "Failed to update card");
+    setCards((prev) => prev.map((card) => (card.id === cardId ? data.item : card)));
+    return data.item;
+  }, []);
+
+  const deleteCard = useCallback(async (cardId) => {
+    const response = await fetch(`/api/cards/${cardId}?userId=user_amex_1`, { method: "DELETE" });
+    if (!response.ok) {
+      const raw = await response.text();
+      let message = "";
+      try {
+        const data = raw ? JSON.parse(raw) : {};
+        message = data?.error || "";
+      } catch {
+        message = "";
+      }
+      throw new Error(message || raw || "Failed to delete card");
+    }
+    setCards((prev) => prev.filter((card) => card.id !== cardId));
+  }, []);
 
   return {
     bootstrap,
     realtime,
     error,
     lastExplanation,
-    actions: { createIntent, runAutonomousPay, uploadReceipt, autoReconcile, scanAutoSubmit, refreshBootstrap, refreshRealtime }
+    conciergeSession,
+    cards,
+    redeemedOfferIds,
+    availablePoints,
+    personalizedInsights,
+    actions: {
+      createIntent,
+      runAutonomousPay,
+      uploadReceipt,
+      autoReconcile,
+      scanAutoSubmit,
+      redeemRewards,
+      redeemOffer,
+      refreshRedeemedOffers,
+      resetRewards,
+      startConciergeChat,
+      createCard,
+      updateCard,
+      deleteCard,
+      resetCards,
+      refreshCards,
+      refreshPersonalizedInsights,
+      resetBootstrap,
+      refreshBootstrap,
+      refreshRealtime
+    }
   };
 }

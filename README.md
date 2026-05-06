@@ -30,6 +30,19 @@ The API currently runs in-memory for fast demo iteration, while `apps/api/schema
 docker compose up -d
 ```
 
+## OpenRouter concierge replies (optional)
+
+Set these environment variables for LLM-powered concierge responses:
+
+```bash
+OPENROUTER_API_KEY=your_key_here
+OPENROUTER_MODEL=openai/gpt-4.1-mini
+OPENROUTER_SITE_URL=http://localhost:5173
+OPENROUTER_APP_NAME=CORE-X Concierge
+```
+
+If `OPENROUTER_API_KEY` is missing or the provider call fails, the concierge endpoint automatically falls back to deterministic template replies.
+
 ## Key endpoints
 
 - `GET /api/health`

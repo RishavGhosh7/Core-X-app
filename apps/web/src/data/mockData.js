@@ -4,8 +4,8 @@ export const cards = [
     name: "Platinum Card",
     type: "platinum",
     lastFour: "1001",
-    balance: 124300,
-    limit: 500000,
+    balance: 100000000,
+    limit: 10000000,
     color: "#212529",
     gradient: "linear-gradient(135deg, #2d3436 0%, #636e72 50%, #2d3436 100%)"
   },
@@ -14,8 +14,8 @@ export const cards = [
     name: "Gold Card",
     type: "gold",
     lastFour: "5678",
-    balance: 45200,
-    limit: 200000,
+    balance: 100000000,
+    limit: 4000000,
     color: "#cc9700",
     gradient: "linear-gradient(135deg, #f7b731 0%, #d4a017 50%, #b8860b 100%)"
   },
@@ -24,8 +24,8 @@ export const cards = [
     name: "Corporate Card",
     type: "corporate",
     lastFour: "9012",
-    balance: 89500,
-    limit: 300000,
+    balance: 100000000,
+    limit: 4000000,
     color: "#0066ff",
     gradient: "linear-gradient(135deg, #0066ff 0%, #0052cc 50%, #003d99 100%)"
   }

@@ -26,7 +26,7 @@ export default function ExplorePage() {
   return (
     <div className="animate-fade-in">
       <div className="sticky top-0 z-40 glass border-b border-gray-100/60">
-        <div className="max-w-lg mx-auto px-5 py-4">
+        <div className="max-w-[1200px] mx-auto px-5 py-4">
           <h1 className="text-xl font-semibold text-surface-900 mb-3">Explore</h1>
           <div className="relative">
             <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-surface-400" />
@@ -44,15 +44,15 @@ export default function ExplorePage() {
         </div>
       </div>
 
-      <div className="max-w-lg mx-auto px-5 space-y-6 mt-4">
+      <div className="max-w-[1200px] mx-auto px-5 space-y-6 mt-4">
         <div className="animate-slide-up stagger-1">
           <div className="flex items-center gap-1.5 mb-3">
             <Sparkles size={16} className="text-gold-500" />
             <h2 className="text-base font-semibold text-surface-900">AI Suggestions</h2>
           </div>
-          <div className="flex gap-3 overflow-x-auto scrollbar-hide -mx-5 px-5 pb-2">
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {aiSuggestions.map((suggestion) => (
-              <div key={suggestion.id} className="flex-shrink-0 w-[240px] rounded-2xl overflow-hidden bg-white shadow-card">
+              <div key={suggestion.id} className="rounded-2xl overflow-hidden bg-white shadow-card">
                 <div className="h-28 overflow-hidden relative">
                   <img src={suggestion.image} alt={suggestion.title} className="w-full h-full object-cover" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
@@ -70,7 +70,7 @@ export default function ExplorePage() {
         </div>
 
         <div className="animate-slide-up stagger-2">
-          <div className="flex gap-2 overflow-x-auto scrollbar-hide -mx-5 px-5">
+          <div className="flex flex-wrap gap-2">
             <button
               onClick={() => setActiveCategory(null)}
               className={`flex-shrink-0 px-4 py-2 rounded-xl text-xs font-medium ${!activeCategory ? "bg-surface-900 text-white" : "bg-white text-surface-600 border border-gray-200"}`}
@@ -94,7 +94,7 @@ export default function ExplorePage() {
         </div>
 
         <section className="animate-slide-up stagger-3">
-          <div className="space-y-2.5">
+          <div className="grid gap-3 lg:grid-cols-2">
             {filteredOffers.map((offer) => (
               <OfferCard key={offer.id} offer={offer} categoryColors={categoryColors} />
             ))}

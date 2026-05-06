@@ -180,6 +180,8 @@ function evaluateIntent(intent) {
     merchant: intent.merchant,
     amount: intent.amount,
     vertical: intent.vertical,
+    sourceCardId: intent.sourceCardId || null,
+    sourceCardLastFour: intent.sourceCardLastFour || null,
     status: recalculateExpenseLineStatus(decision.status),
     decisionId: decision.id,
     createdAt: new Date().toISOString()
@@ -234,6 +236,9 @@ export function createIntent(payload) {
     domain: payload.domain || null,
     receiptId: payload.receiptId || null,
     source: payload.source || "APP",
+    sourceCardId: payload.sourceCardId || null,
+    sourceCardName: payload.sourceCardName || null,
+    sourceCardLastFour: payload.sourceCardLastFour || null,
     agentPersona: payload.agentPersona || null,
     createdAt: new Date().toISOString()
   };
@@ -367,10 +372,10 @@ export function attachReceiptAndReevaluate(intentId) {
   return { intent, decision, offers: ranked, expenseLine: targetLine || null };
 }
 
-export function runAutonomousAgent(userId = "user_amex_1") {
+export function runAutonomousAgent(userId = "user_amex_1", sourceCard = null) {
   const templates = [
     { merchant: "Blue Bistro", amount: 142, vertical: "DINING", domain: { partySize: 3 } },
-    { merchant: "Air Express", amount: 940, vertical: "TRAVEL", domain: { route: "JFK-SFO" } },
+    { merchant: "Air Express", amount: 6850, vertical: "TRAVEL", domain: { route: "CCU-GOI" } },
     { merchant: "City Utility", amount: 128, vertical: "PAYMENT", domain: { category: "electricity" } },
     { merchant: "Ride Daily", amount: 61, vertical: "PAYMENT", domain: { category: "transport" } }
   ];
@@ -385,7 +390,10 @@ export function runAutonomousAgent(userId = "user_amex_1") {
     amount: chosen.amount,
     vertical: chosen.vertical,
     domain: chosen.domain,
-    source: "AGENT"
+    source: "AGENT",
+    sourceCardId: sourceCard?.id || null,
+    sourceCardName: sourceCard?.name || null,
+    sourceCardLastFour: sourceCard?.lastFour || null
   });
 }
 
@@ -397,11 +405,11 @@ export function runFlightBookingAutoPay(userId = "user_amex_1") {
   const result = createIntent({
     userId,
     merchant: "Air Express",
-    amount: 1185,
+    amount: 9240,
     vertical: "TRAVEL",
     domain: {
       prompt: "Book my flight + pay automatically",
-      route: "NYC-SFO",
+      route: "CCU-BOM",
       fareClass: "economy-flex"
     },
     source: "AGENT_TRAVEL_BOOKING"

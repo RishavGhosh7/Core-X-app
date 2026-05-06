@@ -13,6 +13,9 @@ const tabs = ["All", "For You", "Dining", "Travel", "Shopping", "Entertainment"]
 
 export default function OffersPage({ backend }) {
   const [activeTab, setActiveTab] = useState("All");
+  const [redeemingOfferId, setRedeemingOfferId] = useState("");
+  const redeemedOfferIds = backend?.redeemedOfferIds || [];
+  const availablePoints = Number(backend?.availablePoints || 0);
   const liveOffers = backend?.realtime?.latestOffers || [];
   const sourceOffers = liveOffers.length
     ? liveOffers.map((offer) => ({
@@ -34,19 +37,38 @@ export default function OffersPage({ backend }) {
     return offer.category === activeTab.toLowerCase();
   });
 
+  async function handleRedeem(offerId) {
+    if (!offerId || redeemedOfferIds.includes(offerId)) return;
+    setRedeemingOfferId(offerId);
+    try {
+      await backend?.actions?.redeemOffer?.(offerId);
+      await backend?.actions?.refreshRedeemedOffers?.();
+    } catch {
+      // Error is surfaced via backend explanation banner.
+    } finally {
+      setRedeemingOfferId("");
+    }
+  }
+
   return (
     <div className="animate-fade-in">
       <div className="sticky top-0 z-40 glass border-b border-gray-100/60">
-        <div className="max-w-lg mx-auto px-5 py-4">
+        <div className="max-w-[1200px] mx-auto px-5 py-4">
           <div className="flex items-center justify-between">
             <h1 className="text-xl font-semibold text-surface-900">Offers</h1>
-            <div className="flex items-center gap-1 text-xs font-medium text-gold-600 bg-gold-50 px-2.5 py-1 rounded-full">
-              <Sparkles size={12} />
-              {sourceOffers.filter((o) => o.isPersonalized).length} personalized
+            <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1 text-xs font-medium text-primary-700 bg-primary-50 px-2.5 py-1 rounded-full">
+                <Sparkles size={12} />
+                {availablePoints.toLocaleString("en-IN")} pts
+              </div>
+              <div className="flex items-center gap-1 text-xs font-medium text-gold-600 bg-gold-50 px-2.5 py-1 rounded-full">
+                <Sparkles size={12} />
+                {sourceOffers.filter((o) => o.isPersonalized).length} personalized
+              </div>
             </div>
           </div>
         </div>
-        <div className="max-w-lg mx-auto px-5 pb-3 flex gap-2 overflow-x-auto scrollbar-hide">
+        <div className="max-w-[1200px] mx-auto px-5 pb-3 flex flex-wrap gap-2">
           {tabs.map((tab) => (
             <button
               key={tab}
@@ -61,7 +83,7 @@ export default function OffersPage({ backend }) {
         </div>
       </div>
 
-      <div className="max-w-lg mx-auto px-5 space-y-4 mt-4">
+      <div className="max-w-[1200px] mx-auto px-5 mt-4 grid gap-4 lg:grid-cols-2 xl:grid-cols-3">
         {filteredOffers.map((offer, index) => {
           const config = categoryConfig[offer.category];
           const CategoryIcon = config?.icon || Ticket;
@@ -101,10 +123,24 @@ export default function OffersPage({ backend }) {
                 </div>
                 <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-100">
                   <span className="text-xs font-medium text-surface-700">{offer.merchant}</span>
-                  <span className="flex items-center gap-1 text-[10px] text-surface-400">
-                    <Clock size={10} />
-                    Expires {offer.expires}
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className="flex items-center gap-1 text-[10px] text-surface-400">
+                      <Clock size={10} />
+                      Expires {offer.expires}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => handleRedeem(offer.id)}
+                      disabled={redeemingOfferId === offer.id || redeemedOfferIds.includes(offer.id)}
+                      className={`text-[10px] font-semibold px-2.5 py-1 rounded-md border transition-colors ${
+                        redeemedOfferIds.includes(offer.id)
+                          ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                          : "bg-primary-50 text-primary-700 border-primary-200 hover:bg-primary-100"
+                      }`}
+                    >
+                      {redeemingOfferId === offer.id ? "Redeeming..." : redeemedOfferIds.includes(offer.id) ? "Redeemed" : "Redeem"}
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -112,7 +148,7 @@ export default function OffersPage({ backend }) {
         })}
 
         {filteredOffers.length === 0 && (
-          <div className="text-center py-12">
+          <div className="text-center py-12 lg:col-span-2 xl:col-span-3">
             <p className="text-surface-500 text-sm">No offers found for this category</p>
           </div>
         )}

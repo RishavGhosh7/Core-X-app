@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { Camera, Upload, CheckCircle2, Clock, AlertTriangle, FileQuestion } from "lucide-react";
-import { expenseCategories, monthlySpending } from "../data/mockData";
+import { expenseCategories, monthlySpending, recentTransactions } from "../data/mockData";
 
 const statusConfig = {
   approved: { icon: CheckCircle2, color: "text-emerald-600", bg: "bg-emerald-50", label: "Approved" },
@@ -16,19 +16,27 @@ export default function ExpensesPage({ backend }) {
   const explanation = backend?.lastExplanation;
 
   const expenseLines = backend?.bootstrap?.expenseLines || [];
-  const mappedExpenses = useMemo(
-    () =>
-      expenseLines.map((line) => ({
-        id: line.id,
-        merchant: line.merchant,
-        category: line.vertical,
-        amount: Math.round(Number(line.amount || 0) * 100),
-        date: "Live",
-        status: line.status === "SUBMITTED" ? "approved" : "pending",
-        intentId: line.intentId
-      })),
-    [expenseLines]
-  );
+  const mappedExpenses = useMemo(() => {
+    const liveExpenses = expenseLines.map((line) => ({
+      id: line.id,
+      merchant: line.merchant,
+      category: line.vertical,
+      amount: Math.round(Number(line.amount || 0)),
+      date: "Live",
+      status: line.status === "SUBMITTED" ? "approved" : "pending",
+      intentId: line.intentId
+    }));
+    if (liveExpenses.length) return liveExpenses;
+    return recentTransactions.map((tx) => ({
+      id: `fallback_${tx.id}`,
+      merchant: tx.merchant,
+      category: tx.category,
+      amount: Math.abs(Math.round(Number(tx.amount || 0))),
+      date: tx.date || "Recent",
+      status: "approved",
+      intentId: null
+    }));
+  }, [expenseLines]);
   const totalExpenses = mappedExpenses.reduce((sum, e) => sum + e.amount, 0);
   const flaggedCount = mappedExpenses.filter((e) => e.status === "flagged").length;
   const missingCount = mappedExpenses.filter((e) => e.status === "missing_receipt").length;
@@ -45,17 +53,17 @@ export default function ExpensesPage({ backend }) {
   return (
     <div className="animate-fade-in">
       <div className="sticky top-0 z-40 glass border-b border-gray-100/60">
-        <div className="max-w-lg mx-auto px-5 py-4">
+        <div className="max-w-[1200px] mx-auto px-5 py-4">
           <h1 className="text-xl font-semibold text-surface-900">Expenses</h1>
         </div>
       </div>
 
-      <div className="max-w-lg mx-auto px-5 space-y-5 mt-4">
+      <div className="max-w-[1200px] mx-auto px-5 space-y-5 mt-4">
         <div className="grid grid-cols-3 gap-2.5 animate-slide-up stagger-1">
           <div className="bg-white rounded-xl p-3 shadow-card">
             <p className="text-[10px] text-surface-500 uppercase tracking-wider font-medium">Total</p>
             <p className="text-lg font-bold text-surface-900 mt-0.5">
-              {(totalExpenses / 100).toLocaleString("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 })}
+              {totalExpenses.toLocaleString("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 })}
             </p>
           </div>
           <div className="bg-white rounded-xl p-3 shadow-card">
@@ -109,7 +117,7 @@ export default function ExpensesPage({ backend }) {
           )}
         </div>
 
-        <div className="animate-slide-up stagger-3 flex gap-2 overflow-x-auto scrollbar-hide -mx-5 px-5">
+        <div className="animate-slide-up stagger-3 flex flex-wrap gap-2">
           <button onClick={() => setFilterStatus(null)} className={`flex-shrink-0 px-3 py-1.5 rounded-lg text-xs font-medium ${!filterStatus ? "bg-surface-900 text-white" : "bg-white text-surface-600 border border-gray-200"}`}>
             All
           </button>
@@ -125,7 +133,7 @@ export default function ExpensesPage({ backend }) {
           ))}
         </div>
 
-        <div className="animate-slide-up stagger-4 space-y-2.5">
+        <div className="animate-slide-up stagger-4 grid gap-3 lg:grid-cols-2 xl:grid-cols-3">
           {filteredExpenses.map((expense) => {
             const config = statusConfig[expense.status];
             const StatusIcon = config.icon;
@@ -140,7 +148,7 @@ export default function ExpensesPage({ backend }) {
                         <p className="text-xs text-surface-500 mt-0.5">{expense.category} · {expense.date}</p>
                       </div>
                       <p className="text-sm font-bold text-surface-900 flex-shrink-0">
-                        {(expense.amount / 100).toLocaleString("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 })}
+                        {expense.amount.toLocaleString("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 })}
                       </p>
                     </div>
                     <div className="flex items-center gap-2 mt-2">
@@ -160,7 +168,7 @@ export default function ExpensesPage({ backend }) {
                                 ? onUpload(expense.intentId)
                                 : backend?.actions?.scanAutoSubmit(expense.intentId, {
                                     merchant: expense.merchant,
-                                    amount: Number(expense.amount || 0) / 100,
+                                    amount: Number(expense.amount || 0),
                                     vertical: expense.category
                                   })
                             }

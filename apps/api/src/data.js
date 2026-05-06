@@ -13,7 +13,7 @@ export const users = [
 export const policies = [
   {
     userId: "user_amex_1",
-    maxIntentAmount: 2500,
+    maxIntentAmount: 100000,
     blockedMerchants: ["Unknown Vendor"],
     requiresReceiptAbove: 120
   }
@@ -50,6 +50,39 @@ export const offers = [
   }
 ];
 
+export const defaultCards = [
+  {
+    id: "1",
+    name: "Platinum Card",
+    type: "platinum",
+    lastFour: "1001",
+    balance: 100000000,
+    limit: 10000000,
+    color: "#212529",
+    gradient: "linear-gradient(135deg, #2d3436 0%, #636e72 50%, #2d3436 100%)"
+  },
+  {
+    id: "2",
+    name: "Gold Card",
+    type: "gold",
+    lastFour: "5678",
+    balance: 100000000,
+    limit: 4000000,
+    color: "#cc9700",
+    gradient: "linear-gradient(135deg, #f7b731 0%, #d4a017 50%, #b8860b 100%)"
+  },
+  {
+    id: "3",
+    name: "Corporate Card",
+    type: "corporate",
+    lastFour: "9012",
+    balance: 100000000,
+    limit: 4000000,
+    color: "#0066ff",
+    gradient: "linear-gradient(135deg, #0066ff 0%, #0052cc 50%, #003d99 100%)"
+  }
+];
+
 export const state = {
   intents: [],
   decisions: [],
@@ -59,6 +92,9 @@ export const state = {
   receipts: [],
   aggregatesByUser: {},
   idempotencyKeys: {},
+  cardsByUser: {},
+  rewardBalanceByUser: {},
+  redeemedOffersByUser: {},
   realtimeVersion: 0,
   lastEvaluation: null,
   events: []

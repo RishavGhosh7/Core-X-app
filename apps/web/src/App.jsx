@@ -4,6 +4,7 @@ import ExplorePage from "./pages/ExplorePage";
 import ExpensesPage from "./pages/ExpensesPage";
 import OffersPage from "./pages/OffersPage";
 import ProfilePage from "./pages/ProfilePage";
+import ConciergePage from "./pages/ConciergePage";
 import { useNavigation } from "./hooks/useNavigation";
 import { useBackendData } from "./hooks/useBackendData";
 
@@ -12,7 +13,8 @@ const pages = {
   explore: ExplorePage,
   expenses: ExpensesPage,
   offers: OffersPage,
-  profile: ProfilePage
+  profile: ProfilePage,
+  concierge: ConciergePage
 };
 
 function App() {
@@ -22,7 +24,7 @@ function App() {
 
   return (
     <Layout activeTab={activeTab} onNavigate={navigate}>
-      <Page backend={backend} />
+      <Page backend={backend} onNavigate={navigate} />
     </Layout>
   );
 }
