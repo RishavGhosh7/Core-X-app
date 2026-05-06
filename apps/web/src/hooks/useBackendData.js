@@ -206,6 +206,9 @@ export function useBackendData() {
       });
       const data = await parseApiResponse(response, "Intent request failed");
       if (data?.explanation) setLastExplanation(data.explanation);
+      if (data?.chargedCard?.id) {
+        setCards((prev) => prev.map((card) => (card.id === data.chargedCard.id ? data.chargedCard : card)));
+      }
       setBootstrap((prev) => mergeActionResultIntoBootstrap(prev, data));
       setRealtime((prev) => ({
         ...(prev || { version: 0, lastEvaluation: null, latestOffers: [], events: [] }),
@@ -233,6 +236,9 @@ export function useBackendData() {
       });
       const data = await parseApiResponse(response, "Autonomous payment failed");
       if (data?.explanation) setLastExplanation(data.explanation);
+      if (data?.chargedCard?.id) {
+        setCards((prev) => prev.map((card) => (card.id === data.chargedCard.id ? data.chargedCard : card)));
+      }
       setBootstrap((prev) => mergeActionResultIntoBootstrap(prev, data));
       setRealtime((prev) => ({
         ...(prev || { version: 0, lastEvaluation: null, latestOffers: [], events: [] }),

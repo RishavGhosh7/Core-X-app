@@ -229,7 +229,6 @@ export default function HomePage({ backend, onNavigate }) {
           sourceCardName: selectedCardContext?.name || null,
           sourceCardLastFour: selectedCardContext?.lastFour || null
         });
-        await actions.refreshCards?.();
         if (result?.intent?.amount) {
           const delta = Math.round(Number(result.intent.amount || 0) * 100);
           setTodaySpend((current) => current + delta);
@@ -243,7 +242,6 @@ export default function HomePage({ backend, onNavigate }) {
         vertical: action.vertical,
         sourceCardId: resolveBackendCardId(selectedCardContext?.id)
       });
-      await actions.refreshCards?.();
       const delta = Math.round(Number(action.amount || 0) * 100);
       setTodaySpend((current) => current + delta);
     } catch {
