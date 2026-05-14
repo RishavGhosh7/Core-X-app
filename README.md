@@ -19,8 +19,10 @@ npm run dev
 ```
 
 App URLs:
-- Web: `http://localhost:5173`
-- API: `http://localhost:4000`
+
+- **Live (Vercel):** [https://core-x-app-1.vercel.app/](https://core-x-app-1.vercel.app/)
+- Web (local): `http://localhost:5173`
+- API (local): `http://localhost:4000`
 
 ## PostgreSQL (optional for now)
 
