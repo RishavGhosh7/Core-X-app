@@ -45,7 +45,7 @@ const quickActions = [
   { id: "split", icon: Split, label: "Split Bill", color: "bg-accent-50 text-accent-600", merchant: "Blue Bistro", amount: 165, vertical: "DINING" },
   { id: "travel", icon: Plane, label: "Book Travel", color: "bg-sky-50 text-sky-600", merchant: "Air Express", amount: 6800, vertical: "TRAVEL" },
   { id: "expense", icon: Plus, label: "Add Expense", color: "bg-amber-50 text-amber-600", merchant: "Ride Daily", amount: 61, vertical: "PAYMENT", simulatesScan: true },
-  { id: "autopay", icon: Percent, label: "AI AutoPay", color: "bg-rose-50 text-rose-600", autonomous: true }
+  { id: "autopay", icon: Percent, label: "AutoPay", color: "bg-rose-50 text-rose-600", autonomous: true }
 ];
 const formatInr = (value) => value.toLocaleString("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 });
 const defaultUserId = "user_amex_1";
