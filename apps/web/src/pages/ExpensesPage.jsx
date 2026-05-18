@@ -52,25 +52,25 @@ export default function ExpensesPage({ backend }) {
 
   return (
     <div className="animate-fade-in">
-      <div className="sticky top-0 z-40 glass border-b border-gray-100/60">
+      <div className="sticky top-0 z-40 glass border-b border-gray-100 dark:border-surface-700/60">
         <div className="max-w-[1200px] mx-auto px-5 py-4">
-          <h1 className="text-xl font-semibold text-surface-900">Expenses</h1>
+          <h1 className="text-xl font-semibold text-surface-900 dark:text-white">Expenses</h1>
         </div>
       </div>
 
       <div className="max-w-[1200px] mx-auto px-5 space-y-5 mt-4">
         <div className="grid grid-cols-3 gap-2.5 animate-slide-up stagger-1">
-          <div className="bg-white rounded-xl p-3 shadow-card">
-            <p className="text-[10px] text-surface-500 uppercase tracking-wider font-medium">Total</p>
-            <p className="text-lg font-bold text-surface-900 mt-0.5">
+          <div className="bg-white dark:bg-surface-800 rounded-xl p-3 shadow-card">
+            <p className="text-[10px] text-surface-500 dark:text-surface-400 uppercase tracking-wider font-medium">Total</p>
+            <p className="text-lg font-bold text-surface-900 dark:text-white mt-0.5">
               {totalExpenses.toLocaleString("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 })}
             </p>
           </div>
-          <div className="bg-white rounded-xl p-3 shadow-card">
+          <div className="bg-white dark:bg-surface-800 rounded-xl p-3 shadow-card">
             <p className="text-[10px] text-red-500 uppercase tracking-wider font-medium">Flagged</p>
             <p className="text-lg font-bold text-red-600 mt-0.5">{flaggedCount}</p>
           </div>
-          <div className="bg-white rounded-xl p-3 shadow-card">
+          <div className="bg-white dark:bg-surface-800 rounded-xl p-3 shadow-card">
             <p className="text-[10px] text-orange-500 uppercase tracking-wider font-medium">No Receipt</p>
             <p className="text-lg font-bold text-orange-600 mt-0.5">{missingCount}</p>
           </div>
@@ -78,32 +78,32 @@ export default function ExpensesPage({ backend }) {
 
         <div className="animate-slide-up stagger-2">
           {explanation?.text && (
-            <div className="mb-3 bg-white rounded-2xl p-4 shadow-card border border-amber-100">
+            <div className="mb-3 bg-white dark:bg-surface-800 rounded-2xl p-4 shadow-card border border-amber-100">
               <p className="text-xs font-semibold text-amber-700 uppercase tracking-wide">
                 Expense Decision Explanation · {String(explanation.severity || "medium").toUpperCase()}
               </p>
               <p className="text-sm text-surface-800 mt-1">{explanation.text}</p>
-              {explanation.reason && <p className="text-xs text-surface-500 mt-1">Reason: {explanation.reason}</p>}
-              {explanation.suggestion && <p className="text-xs text-surface-500 mt-0.5">Suggestion: {explanation.suggestion}</p>}
+              {explanation.reason && <p className="text-xs text-surface-500 dark:text-surface-400 mt-1">Reason: {explanation.reason}</p>}
+              {explanation.suggestion && <p className="text-xs text-surface-500 dark:text-surface-400 mt-0.5">Suggestion: {explanation.suggestion}</p>}
             </div>
           )}
-          <button onClick={() => setShowScanner(!showScanner)} className="w-full bg-white rounded-2xl p-5 shadow-card">
+          <button onClick={() => setShowScanner(!showScanner)} className="w-full bg-white dark:bg-surface-800 rounded-2xl p-5 shadow-card">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 rounded-xl bg-primary-50 flex items-center justify-center">
                 <Camera size={24} className="text-primary-600" />
               </div>
               <div className="flex-1 text-left">
-                <p className="text-sm font-semibold text-surface-900">Scan Receipt</p>
-                <p className="text-xs text-surface-500 mt-0.5">Auto-extract amount, merchant & category</p>
+                <p className="text-sm font-semibold text-surface-900 dark:text-white">Scan Receipt</p>
+                <p className="text-xs text-surface-500 dark:text-surface-400 mt-0.5">Auto-extract amount, merchant & category</p>
               </div>
               <Upload size={18} className="text-surface-400" />
             </div>
           </button>
           {showScanner && (
-            <div className="mt-3 bg-white rounded-2xl p-5 shadow-card animate-slide-up">
+            <div className="mt-3 bg-white dark:bg-surface-800 rounded-2xl p-5 shadow-card animate-slide-up">
               <div className="border-2 border-dashed border-primary-200 rounded-xl p-8 flex flex-col items-center gap-3 bg-primary-50/30">
                 <Camera size={32} className="text-primary-400" />
-                <p className="text-sm text-surface-600 font-medium">Upload image or PDF receipt</p>
+                <p className="text-sm text-surface-600 dark:text-surface-300 font-medium">Upload image or PDF receipt</p>
                 <input type="file" accept="image/*,.pdf,application/pdf" onChange={(e) => setReceiptFile(e.target.files?.[0] || null)} />
                 <button
                   className="px-4 py-2 bg-primary-600 text-white text-xs font-medium rounded-lg disabled:opacity-50"
@@ -118,7 +118,7 @@ export default function ExpensesPage({ backend }) {
         </div>
 
         <div className="animate-slide-up stagger-3 flex flex-wrap gap-2">
-          <button onClick={() => setFilterStatus(null)} className={`flex-shrink-0 px-3 py-1.5 rounded-lg text-xs font-medium ${!filterStatus ? "bg-surface-900 text-white" : "bg-white text-surface-600 border border-gray-200"}`}>
+          <button onClick={() => setFilterStatus(null)} className={`flex-shrink-0 px-3 py-1.5 rounded-lg text-xs font-medium ${!filterStatus ? "bg-surface-900 text-white" : "bg-white dark:bg-surface-700 text-surface-600 dark:text-surface-300 border border-gray-200 dark:border-surface-600"}`}>
             All
           </button>
           {Object.entries(statusConfig).map(([key, config]) => (
@@ -138,16 +138,16 @@ export default function ExpensesPage({ backend }) {
             const config = statusConfig[expense.status];
             const StatusIcon = config.icon;
             return (
-              <div key={expense.id} className="bg-white rounded-xl p-4 shadow-card">
+              <div key={expense.id} className="bg-white dark:bg-surface-800 rounded-xl p-4 shadow-card">
                 <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-surface-50 flex items-center justify-center text-lg flex-shrink-0">🧾</div>
+                  <div className="w-10 h-10 rounded-xl bg-surface-50 dark:bg-surface-700 flex items-center justify-center text-lg flex-shrink-0">🧾</div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-2">
                       <div className="min-w-0">
-                        <p className="text-sm font-semibold text-surface-900 truncate">{expense.merchant}</p>
-                        <p className="text-xs text-surface-500 mt-0.5">{expense.category} · {expense.date}</p>
+                        <p className="text-sm font-semibold text-surface-900 dark:text-white truncate">{expense.merchant}</p>
+                        <p className="text-xs text-surface-500 dark:text-surface-400 mt-0.5">{expense.category} · {expense.date}</p>
                       </div>
-                      <p className="text-sm font-bold text-surface-900 flex-shrink-0">
+                      <p className="text-sm font-bold text-surface-900 dark:text-white flex-shrink-0">
                         {expense.amount.toLocaleString("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 })}
                       </p>
                     </div>
@@ -183,7 +183,7 @@ export default function ExpensesPage({ backend }) {
               </div>
             );
           })}
-          {!filteredExpenses.length && <p className="text-sm text-surface-500">No live expenses yet. Trigger an intent from Home.</p>}
+          {!filteredExpenses.length && <p className="text-sm text-surface-500 dark:text-surface-400">No live expenses yet. Trigger an intent from Home.</p>}
         </div>
       </div>
     </div>

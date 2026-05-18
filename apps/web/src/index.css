@@ -17,6 +17,11 @@
     color: #212529;
   }
 
+  .dark body {
+    background: #212529;
+    color: #f8f9fa;
+  }
+
   ::-webkit-scrollbar {
     display: none;
   }
@@ -27,6 +32,10 @@
     background: rgba(255, 255, 255, 0.72);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
+  }
+
+  .dark .glass {
+    background: rgba(33, 37, 41, 0.85);
   }
 
   .glass-dark {

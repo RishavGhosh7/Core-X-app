@@ -52,10 +52,10 @@ export default function OffersPage({ backend }) {
 
   return (
     <div className="animate-fade-in">
-      <div className="sticky top-0 z-40 glass border-b border-gray-100/60">
+      <div className="sticky top-0 z-40 glass border-b border-gray-100 dark:border-surface-700/60">
         <div className="max-w-[1200px] mx-auto px-5 py-4">
           <div className="flex items-center justify-between">
-            <h1 className="text-xl font-semibold text-surface-900">Offers</h1>
+            <h1 className="text-xl font-semibold text-surface-900 dark:text-white">Offers</h1>
             <div className="flex items-center gap-2">
               <div className="flex items-center gap-1 text-xs font-medium text-primary-700 bg-primary-50 px-2.5 py-1 rounded-full">
                 <Sparkles size={12} />
@@ -74,7 +74,7 @@ export default function OffersPage({ backend }) {
               key={tab}
               onClick={() => setActiveTab(tab)}
               className={`flex-shrink-0 px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 ${
-                activeTab === tab ? "bg-surface-900 text-white" : "bg-white text-surface-600 border border-gray-200 hover:border-gray-300"
+                activeTab === tab ? "bg-surface-900 text-white" : "bg-white dark:bg-surface-700 text-surface-600 dark:text-surface-300 border border-gray-200 dark:border-surface-600 hover:border-gray-300"
               }`}
             >
               {tab}
@@ -90,7 +90,7 @@ export default function OffersPage({ backend }) {
           return (
             <div
               key={offer.id}
-              className="bg-white rounded-2xl shadow-card overflow-hidden hover:shadow-card-hover transition-shadow cursor-pointer group animate-slide-up"
+              className="bg-white dark:bg-surface-800 rounded-2xl shadow-card overflow-hidden hover:shadow-card-hover transition-shadow cursor-pointer group animate-slide-up"
               style={{ animationDelay: `${index * 0.05}s`, animationFillMode: "both" }}
             >
               <div className="h-40 overflow-hidden relative">
@@ -100,7 +100,7 @@ export default function OffersPage({ backend }) {
                   {offer.discount}
                 </div>
                 {offer.isPersonalized && (
-                  <div className="absolute top-3 right-3 bg-gold-500 text-surface-900 text-[10px] font-bold px-2 py-1 rounded-lg shadow-lg flex items-center gap-1">
+                  <div className="absolute top-3 right-3 bg-gold-500 text-surface-900 dark:text-white text-[10px] font-bold px-2 py-1 rounded-lg shadow-lg flex items-center gap-1">
                     <Sparkles size={10} />
                     FOR YOU
                   </div>
@@ -116,15 +116,15 @@ export default function OffersPage({ backend }) {
               <div className="p-4">
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
-                    <h3 className="text-sm font-semibold text-surface-900">{offer.title}</h3>
-                    <p className="text-xs text-surface-500 mt-1 leading-relaxed">{offer.description}</p>
+                    <h3 className="text-sm font-semibold text-surface-900 dark:text-white">{offer.title}</h3>
+                    <p className="text-xs text-surface-500 dark:text-surface-400 dark:text-surface-500 mt-1 leading-relaxed">{offer.description}</p>
                   </div>
-                  <ArrowRight size={16} className="text-surface-400 flex-shrink-0 mt-0.5 group-hover:translate-x-0.5 transition-transform" />
+                  <ArrowRight size={16} className="text-surface-400 dark:text-surface-500 flex-shrink-0 mt-0.5 group-hover:translate-x-0.5 transition-transform" />
                 </div>
-                <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-100">
-                  <span className="text-xs font-medium text-surface-700">{offer.merchant}</span>
+                <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-100 dark:border-surface-700">
+                  <span className="text-xs font-medium text-surface-700 dark:text-surface-200">{offer.merchant}</span>
                   <div className="flex items-center gap-2">
-                    <span className="flex items-center gap-1 text-[10px] text-surface-400">
+                    <span className="flex items-center gap-1 text-[10px] text-surface-400 dark:text-surface-500">
                       <Clock size={10} />
                       Expires {offer.expires}
                     </span>
@@ -149,7 +149,7 @@ export default function OffersPage({ backend }) {
 
         {filteredOffers.length === 0 && (
           <div className="text-center py-12 lg:col-span-2 xl:col-span-3">
-            <p className="text-surface-500 text-sm">No offers found for this category</p>
+            <p className="text-surface-500 dark:text-surface-400 dark:text-surface-500 text-sm">No offers found for this category</p>
           </div>
         )}
       </div>

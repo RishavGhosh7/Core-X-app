@@ -25,20 +25,20 @@ export default function ExplorePage() {
 
   return (
     <div className="animate-fade-in">
-      <div className="sticky top-0 z-40 glass border-b border-gray-100/60">
+      <div className="sticky top-0 z-40 glass border-b border-gray-100 dark:border-surface-700/60">
         <div className="max-w-[1200px] mx-auto px-5 py-4">
-          <h1 className="text-xl font-semibold text-surface-900 mb-3">Explore</h1>
+          <h1 className="text-xl font-semibold text-surface-900 dark:text-white mb-3">Explore</h1>
           <div className="relative">
-            <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-surface-400" />
+            <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-surface-400 dark:text-surface-500" />
             <input
               type="text"
               placeholder="Search restaurants, flights, hotels..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-10 py-2.5 bg-white rounded-xl border border-gray-200 text-sm placeholder:text-surface-400 focus:outline-none"
+              className="w-full pl-10 pr-10 py-2.5 bg-white dark:bg-surface-800 rounded-xl border border-gray-200 dark:border-surface-600 text-sm text-surface-900 dark:text-white placeholder:text-surface-400 dark:placeholder:text-surface-500 focus:outline-none"
             />
-            <button className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-lg bg-surface-50">
-              <Filter size={14} className="text-surface-500" />
+            <button className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-lg bg-surface-50 dark:bg-surface-700">
+              <Filter size={14} className="text-surface-500 dark:text-surface-400 dark:text-surface-500" />
             </button>
           </div>
         </div>
@@ -48,7 +48,7 @@ export default function ExplorePage() {
         <div className="animate-slide-up stagger-1">
           <div className="flex items-center gap-1.5 mb-3">
             <Sparkles size={16} className="text-gold-500" />
-            <h2 className="text-base font-semibold text-surface-900">AI Suggestions</h2>
+            <h2 className="text-base font-semibold text-surface-900 dark:text-white">AI Suggestions</h2>
           </div>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {aiSuggestions.map((suggestion) => (
@@ -61,8 +61,8 @@ export default function ExplorePage() {
                   </div>
                 </div>
                 <div className="p-3 flex items-center justify-between">
-                  <p className="text-xs text-surface-500">{suggestion.description}</p>
-                  <ArrowRight size={14} className="text-surface-400 flex-shrink-0" />
+                  <p className="text-xs text-surface-500 dark:text-surface-400 dark:text-surface-500">{suggestion.description}</p>
+                  <ArrowRight size={14} className="text-surface-400 dark:text-surface-500 flex-shrink-0" />
                 </div>
               </div>
             ))}
@@ -73,7 +73,7 @@ export default function ExplorePage() {
           <div className="flex flex-wrap gap-2">
             <button
               onClick={() => setActiveCategory(null)}
-              className={`flex-shrink-0 px-4 py-2 rounded-xl text-xs font-medium ${!activeCategory ? "bg-surface-900 text-white" : "bg-white text-surface-600 border border-gray-200"}`}
+              className={`flex-shrink-0 px-4 py-2 rounded-xl text-xs font-medium ${!activeCategory ? "bg-surface-900 text-white" : "bg-white dark:bg-surface-700 text-surface-600 dark:text-surface-300 border border-gray-200 dark:border-surface-600"}`}
             >
               All
             </button>
@@ -83,7 +83,7 @@ export default function ExplorePage() {
                 <button
                   key={cat.id}
                   onClick={() => setActiveCategory(cat.id === activeCategory ? null : cat.id)}
-                  className={`flex-shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-medium ${activeCategory === cat.id ? "bg-surface-900 text-white" : "bg-white text-surface-600 border border-gray-200"}`}
+                  className={`flex-shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-medium ${activeCategory === cat.id ? "bg-surface-900 text-white" : "bg-white dark:bg-surface-700 text-surface-600 dark:text-surface-300 border border-gray-200 dark:border-surface-600"}`}
                 >
                   <Icon size={14} />
                   {cat.label}
@@ -102,7 +102,7 @@ export default function ExplorePage() {
         </section>
 
         <div className="flex items-center justify-center py-4">
-          <button className="flex items-center gap-2 px-5 py-2.5 bg-white rounded-xl shadow-card text-sm font-medium text-surface-700">
+          <button className="flex items-center gap-2 px-5 py-2.5 bg-white dark:bg-surface-800 rounded-xl shadow-card text-sm font-medium text-surface-700 dark:text-surface-200">
             <MapPin size={16} className="text-primary-600" />
             View on Map
           </button>
@@ -114,7 +114,7 @@ export default function ExplorePage() {
 
 function OfferCard({ offer, categoryColors }) {
   return (
-    <div className="bg-white rounded-xl shadow-card overflow-hidden flex cursor-pointer group">
+    <div className="bg-white dark:bg-surface-800 rounded-xl shadow-card overflow-hidden flex cursor-pointer group">
       <div className="w-24 h-24 flex-shrink-0 overflow-hidden relative">
         <img src={offer.image} alt={offer.title} className="w-full h-full object-cover" />
       </div>
@@ -125,10 +125,10 @@ function OfferCard({ offer, categoryColors }) {
               {offer.discount}
             </span>
           </div>
-          <p className="text-sm font-semibold text-surface-900 truncate">{offer.title}</p>
-          <p className="text-xs text-surface-500 truncate">{offer.merchant}</p>
+          <p className="text-sm font-semibold text-surface-900 dark:text-white truncate">{offer.title}</p>
+          <p className="text-xs text-surface-500 dark:text-surface-400 dark:text-surface-500 truncate">{offer.merchant}</p>
         </div>
-        <p className="text-[10px] text-surface-400">Expires {offer.expires}</p>
+        <p className="text-[10px] text-surface-400 dark:text-surface-500">Expires {offer.expires}</p>
       </div>
     </div>
   );

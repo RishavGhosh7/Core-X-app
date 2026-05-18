@@ -48,6 +48,13 @@ const quickActions = [
   { id: "autopay", icon: Percent, label: "AutoPay", color: "bg-rose-50 text-rose-600", autonomous: true }
 ];
 const formatInr = (value) => value.toLocaleString("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 });
+
+function getTimeGreeting(date = new Date()) {
+  const hour = date.getHours();
+  if (hour < 12) return "Good morning";
+  if (hour < 17) return "Good afternoon";
+  return "Good evening";
+}
 const defaultUserId = "user_amex_1";
 
 function normalizeCategory(rawCategory = "") {
@@ -269,41 +276,41 @@ export default function HomePage({ backend, onNavigate }) {
 
   return (
     <div className="animate-fade-in">
-      <div className="sticky top-0 z-40 glass border-b border-gray-100/60">
+      <div className="sticky top-0 z-40 glass border-b border-gray-100 dark:border-surface-700/60">
         <div className="max-w-lg mx-auto px-5 py-4 flex items-center justify-between">
           <div>
-            <p className="text-sm text-surface-500 font-medium">Good morning</p>
-            <h1 className="text-xl font-semibold text-surface-900">Rishav Ghosh</h1>
+            <p className="text-sm text-surface-500 dark:text-surface-400 dark:text-surface-500 font-medium">{getTimeGreeting()}</p>
+            <h1 className="text-xl font-semibold text-surface-900 dark:text-white">Rishav Ghosh</h1>
           </div>
-          <button className="relative p-2.5 rounded-xl bg-white shadow-card hover:shadow-card-hover transition-all duration-200 active:scale-95">
-            <Bell size={20} className="text-surface-700" />
+          <button className="relative p-2.5 rounded-xl bg-white dark:bg-surface-800 shadow-card hover:shadow-card-hover transition-all duration-200 active:scale-95">
+            <Bell size={20} className="text-surface-700 dark:text-surface-200" />
             <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full" />
           </button>
         </div>
       </div>
 
       <div className="max-w-[1200px] mx-auto px-5 space-y-6 mt-4">
-        <div className="animate-slide-up stagger-1 bg-white rounded-2xl p-5 shadow-card">
+        <div className="animate-slide-up stagger-1 bg-white dark:bg-surface-800 rounded-2xl p-5 shadow-card">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-lg bg-primary-50 flex items-center justify-center">
                 <IndianRupee size={16} className="text-primary-600" />
               </div>
-              <span className="text-sm font-medium text-surface-500">Total Balance</span>
+              <span className="text-sm font-medium text-surface-500 dark:text-surface-400 dark:text-surface-500">Total Balance</span>
             </div>
               <span className="text-xs font-medium text-accent-600 bg-accent-50 px-2.5 py-1 rounded-full">
                 {(bootstrap?.intents || cardList).length} active
               </span>
           </div>
-          <p className="text-3xl font-bold text-surface-900 tracking-tight balance-pop-in">
+          <p className="text-3xl font-bold text-surface-900 dark:text-white tracking-tight balance-pop-in">
             {(totalBalance / 100).toLocaleString("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 })}
           </p>
           <div className="flex items-center gap-4 mt-3">
             <div className="flex items-center gap-1.5">
               <div className="w-1.5 h-1.5 rounded-full bg-red-400" />
-              <span className="text-xs text-surface-500">
+              <span className="text-xs text-surface-500 dark:text-surface-400 dark:text-surface-500">
                 Spent today:{" "}
-                <span className="font-semibold text-surface-700">
+                <span className="font-semibold text-surface-700 dark:text-surface-200">
                   {todaySpend.toLocaleString("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 })}
                 </span>
               </span>
@@ -315,17 +322,17 @@ export default function HomePage({ backend, onNavigate }) {
           <div className="space-y-6 order-2 lg:order-1">
             <div className="animate-slide-up stagger-3">
           <div className="flex items-center justify-between mb-3">
-            <h2 className="text-base font-semibold text-surface-900">Quick Actions</h2>
-            <span className="text-[11px] font-medium text-surface-500 flex items-center gap-1">
+            <h2 className="text-base font-semibold text-surface-900 dark:text-white">Quick Actions</h2>
+            <span className="text-[11px] font-medium text-surface-500 dark:text-surface-400 dark:text-surface-500 flex items-center gap-1">
               <Sparkles size={13} className="text-primary-600" />
               Drag a card to launch
             </span>
           </div>
           {cardList.length > 1 ? (
-            <div className="mb-3 bg-white rounded-xl p-2.5 shadow-card border border-gray-100">
+            <div className="mb-3 bg-white dark:bg-surface-800 rounded-xl p-2.5 shadow-card border border-gray-100 dark:border-surface-700">
               <div className="flex items-center justify-between mb-2">
-                <p className="text-[11px] font-semibold text-surface-700 uppercase tracking-wide">Pay from</p>
-                <span className="text-[10px] text-surface-500">Used for all quick-action transactions</span>
+                <p className="text-[11px] font-semibold text-surface-700 dark:text-surface-200 uppercase tracking-wide">Pay from</p>
+                <span className="text-[10px] text-surface-500 dark:text-surface-400 dark:text-surface-500">Used for all quick-action transactions</span>
               </div>
               <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
                 {cardList.map((card) => {
@@ -338,7 +345,7 @@ export default function HomePage({ backend, onNavigate }) {
                       className={`flex-shrink-0 px-3 py-1.5 rounded-lg text-[11px] font-medium border transition-all ${
                         isSelected
                           ? "bg-primary-50 text-primary-700 border-primary-200"
-                          : "bg-white text-surface-600 border-gray-200 hover:border-gray-300"
+                          : "bg-white dark:bg-surface-700 text-surface-600 dark:text-surface-300 border-gray-200 dark:border-surface-600 hover:border-gray-300"
                       }`}
                     >
                       {card.name}
@@ -384,7 +391,7 @@ export default function HomePage({ backend, onNavigate }) {
                 >
                   <action.icon size={20} />
                 </div>
-                <span className="text-[11px] font-medium text-surface-600">{action.label}</span>
+                <span className="text-[11px] font-medium text-surface-600 dark:text-surface-300">{action.label}</span>
                 {suggestedActionId === action.id && (
                   <span className="text-[10px] font-semibold text-primary-600 -mt-1">AI pick</span>
                 )}
@@ -397,7 +404,7 @@ export default function HomePage({ backend, onNavigate }) {
             </div>
           )}
           {scanFeedback && (
-            <div className="mt-3 bg-white rounded-xl p-3 shadow-card border border-emerald-100 animate-slide-in-right">
+            <div className="mt-3 bg-white dark:bg-surface-800 rounded-xl p-3 shadow-card border border-emerald-100 animate-slide-in-right">
               <div className="flex items-center gap-2 text-emerald-700">
                 <ScanLine size={14} />
                 <span className="text-xs font-semibold uppercase tracking-wide">Receipt scanning in progress</span>
@@ -409,9 +416,9 @@ export default function HomePage({ backend, onNavigate }) {
           )}
         </div>
 
-            <div className="animate-slide-up stagger-4 bg-white rounded-2xl p-4 shadow-card">
+            <div className="animate-slide-up stagger-4 bg-white dark:bg-surface-800 rounded-2xl p-4 shadow-card">
           <div className="flex items-center justify-between">
-            <h2 className="text-base font-semibold text-surface-900">AutoPay Controls</h2>
+            <h2 className="text-base font-semibold text-surface-900 dark:text-white">AutoPay Controls</h2>
             <button
               type="button"
               onClick={() => setAutoPayEnabled((value) => !value)}
@@ -428,9 +435,9 @@ export default function HomePage({ backend, onNavigate }) {
           </div>
           <div className={`mt-4 space-y-4 ${autoPayEnabled ? "" : "opacity-60"}`}>
             <label className="block">
-              <div className="flex items-center justify-between text-xs font-medium text-surface-500">
+              <div className="flex items-center justify-between text-xs font-medium text-surface-500 dark:text-surface-400 dark:text-surface-500">
                 <span>Coverage target</span>
-                <span className="text-surface-700">{autoPayPercent}%</span>
+                <span className="text-surface-700 dark:text-surface-200">{autoPayPercent}%</span>
               </div>
               <input
                 type="range"
@@ -442,15 +449,15 @@ export default function HomePage({ backend, onNavigate }) {
                 className="w-full mt-2 accent-primary-600"
                 disabled={!autoPayEnabled}
               />
-              <div className="mt-1 flex justify-between text-[10px] text-surface-400">
+              <div className="mt-1 flex justify-between text-[10px] text-surface-400 dark:text-surface-500">
                 <span>10%</span>
                 <span>100%</span>
               </div>
             </label>
             <label className="block">
-              <div className="flex items-center justify-between text-xs font-medium text-surface-500">
+              <div className="flex items-center justify-between text-xs font-medium text-surface-500 dark:text-surface-400 dark:text-surface-500">
                 <span>Monthly cap</span>
-                <span className="text-surface-700">{formatInr(autoPayCap)}</span>
+                <span className="text-surface-700 dark:text-surface-200">{formatInr(autoPayCap)}</span>
               </div>
               <input
                 type="range"
@@ -462,7 +469,7 @@ export default function HomePage({ backend, onNavigate }) {
                 className="w-full mt-2 accent-accent-600"
                 disabled={!autoPayEnabled}
               />
-              <div className="mt-1 flex justify-between text-[10px] text-surface-400">
+              <div className="mt-1 flex justify-between text-[10px] text-surface-400 dark:text-surface-500">
                 <span>{formatInr(100000)}</span>
                 <span>{formatInr(2500000)}</span>
               </div>
@@ -502,15 +509,15 @@ export default function HomePage({ backend, onNavigate }) {
 
             <div className="animate-slide-up stagger-5">
           {lastExplanation?.text && (
-            <div className="mb-3 bg-white rounded-xl p-3.5 shadow-card border border-amber-100">
+            <div className="mb-3 bg-white dark:bg-surface-800 rounded-xl p-3.5 shadow-card border border-amber-100">
               <p className="text-xs font-semibold text-amber-700 uppercase tracking-wide">
                 AI Policy Explanation · {String(lastExplanation.severity || "medium").toUpperCase()}
               </p>
               <p className="text-sm text-surface-800 mt-1">{lastExplanation.text}</p>
-              {lastExplanation.suggestion && <p className="text-xs text-surface-500 mt-1">Suggestion: {lastExplanation.suggestion}</p>}
+              {lastExplanation.suggestion && <p className="text-xs text-surface-500 dark:text-surface-400 dark:text-surface-500 mt-1">Suggestion: {lastExplanation.suggestion}</p>}
             </div>
           )}
-          <h2 className="text-base font-semibold text-surface-900 mb-3">Smart Insights</h2>
+          <h2 className="text-base font-semibold text-surface-900 dark:text-white mb-3">Smart Insights</h2>
           <div className="space-y-2.5">
             {insightsFeed.map((insight) => {
               const Icon = iconMap[insight.icon] || TrendingUp;
@@ -520,7 +527,7 @@ export default function HomePage({ backend, onNavigate }) {
                   type="button"
                   key={insight.id}
                   onClick={() => setActiveInsightId((current) => (current === insight.id ? "" : insight.id))}
-                  className={`w-full text-left bg-white rounded-xl p-3.5 shadow-card flex items-start gap-3 transition-all ${
+                  className={`w-full text-left bg-white dark:bg-surface-800 rounded-xl p-3.5 shadow-card flex items-start gap-3 transition-all ${
                     isActive ? "ring-2 ring-primary-200 shadow-card-hover" : ""
                   }`}
                 >
@@ -528,21 +535,21 @@ export default function HomePage({ backend, onNavigate }) {
                     <Icon size={16} />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold text-surface-900">{insight.title}</p>
-                    <p className="text-xs text-surface-500 mt-0.5 leading-relaxed">{insight.description}</p>
+                    <p className="text-sm font-semibold text-surface-900 dark:text-white">{insight.title}</p>
+                    <p className="text-xs text-surface-500 dark:text-surface-400 dark:text-surface-500 mt-0.5 leading-relaxed">{insight.description}</p>
                   </div>
-                  <ArrowRight size={16} className={`text-surface-400 flex-shrink-0 mt-1 transition-transform ${isActive ? "translate-x-1" : ""}`} />
+                  <ArrowRight size={16} className={`text-surface-400 dark:text-surface-500 flex-shrink-0 mt-1 transition-transform ${isActive ? "translate-x-1" : ""}`} />
                 </button>
               );
             })}
           </div>
           {selectedInsight && (
-            <div className="mt-3 bg-white rounded-xl p-3.5 shadow-card border border-primary-100 animate-slide-up">
+            <div className="mt-3 bg-white dark:bg-surface-800 rounded-xl p-3.5 shadow-card border border-primary-100 animate-slide-up">
               <div className="flex items-center justify-between">
                 <p className="text-xs font-semibold uppercase tracking-wide text-primary-700">
                   {selectedInsightCategory === "All" ? "Category spending breakdown" : `${selectedInsightCategory} spending breakdown`}
                 </p>
-                <button type="button" onClick={() => setActiveInsightId("")} className="text-[11px] text-surface-500 hover:text-surface-700">
+                <button type="button" onClick={() => setActiveInsightId("")} className="text-[11px] text-surface-500 dark:text-surface-400 dark:text-surface-500 hover:text-surface-700 dark:text-surface-200">
                   Close
                 </button>
               </div>
@@ -553,17 +560,17 @@ export default function HomePage({ backend, onNavigate }) {
                     return (
                       <div key={row.category}>
                         <div className="flex items-center justify-between text-xs">
-                          <span className="font-medium text-surface-700">{row.category}</span>
-                          <span className="text-surface-500">{formatInr(row.amount)}</span>
+                          <span className="font-medium text-surface-700 dark:text-surface-200">{row.category}</span>
+                          <span className="text-surface-500 dark:text-surface-400 dark:text-surface-500">{formatInr(row.amount)}</span>
                         </div>
-                        <div className="mt-1 h-1.5 rounded-full bg-surface-100 overflow-hidden">
+                        <div className="mt-1 h-1.5 rounded-full bg-surface-100 dark:bg-surface-700 overflow-hidden">
                           <div className="h-full bg-primary-500 rounded-full transition-all duration-500" style={{ width: `${width}%` }} />
                         </div>
                       </div>
                     );
                   })
                 ) : (
-                  <p className="text-xs text-surface-500">No matching transactions in recent activity yet.</p>
+                  <p className="text-xs text-surface-500 dark:text-surface-400 dark:text-surface-500">No matching transactions in recent activity yet.</p>
                 )}
               </div>
             </div>
@@ -572,7 +579,7 @@ export default function HomePage({ backend, onNavigate }) {
 
             <div className="animate-slide-up stagger-5">
           <div className="flex items-center justify-between mb-3">
-            <h2 className="text-base font-semibold text-surface-900">Offers For You</h2>
+            <h2 className="text-base font-semibold text-surface-900 dark:text-white">Offers For You</h2>
             <button
               type="button"
               onClick={() => onNavigate?.("offers")}
@@ -583,7 +590,7 @@ export default function HomePage({ backend, onNavigate }) {
           </div>
           <div className="flex gap-3 overflow-x-auto scrollbar-hide -mx-5 px-5 pb-2">
             {liveOffers.slice(0, 4).map((offer) => (
-              <div key={offer.id} className="flex-shrink-0 w-[200px] bg-white rounded-xl overflow-hidden shadow-card">
+              <div key={offer.id} className="flex-shrink-0 w-[200px] bg-white dark:bg-surface-800 rounded-xl overflow-hidden shadow-card">
                 <div className="h-24 overflow-hidden relative">
                   <img src={offer.image} alt={offer.title} className="w-full h-full object-cover" />
                   <div className="absolute top-2 left-2 bg-primary-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-md">
@@ -591,8 +598,8 @@ export default function HomePage({ backend, onNavigate }) {
                   </div>
                 </div>
                 <div className="p-3">
-                  <p className="text-xs font-semibold text-surface-900 leading-tight">{offer.title}</p>
-                  <p className="text-[10px] text-surface-500 mt-1">{offer.merchant}</p>
+                  <p className="text-xs font-semibold text-surface-900 dark:text-white leading-tight">{offer.title}</p>
+                  <p className="text-[10px] text-surface-500 dark:text-surface-400 dark:text-surface-500 mt-1">{offer.merchant}</p>
                 </div>
               </div>
             ))}
@@ -601,7 +608,7 @@ export default function HomePage({ backend, onNavigate }) {
 
             <div className="animate-slide-up stagger-5">
           <div className="flex items-center justify-between mb-3">
-            <h2 className="text-base font-semibold text-surface-900">Recent Activity</h2>
+            <h2 className="text-base font-semibold text-surface-900 dark:text-white">Recent Activity</h2>
             <button
               type="button"
               onClick={() => onNavigate?.("expenses")}
@@ -610,17 +617,17 @@ export default function HomePage({ backend, onNavigate }) {
               View all <ChevronRight size={14} />
             </button>
           </div>
-          <div className="bg-white rounded-2xl shadow-card overflow-hidden divide-y divide-gray-50">
+          <div className="bg-white dark:bg-surface-800 rounded-2xl shadow-card overflow-hidden divide-y divide-gray-50 dark:divide-surface-700">
             {feedTransactions.map((tx) => (
               <div key={tx.id} className="flex items-center gap-3 px-4 py-3">
-                <div className="w-10 h-10 rounded-xl bg-surface-50 flex items-center justify-center flex-shrink-0">
-                  <MapPin size={16} className="text-surface-500" />
+                <div className="w-10 h-10 rounded-xl bg-surface-50 dark:bg-surface-700 flex items-center justify-center flex-shrink-0">
+                  <MapPin size={16} className="text-surface-500 dark:text-surface-400 dark:text-surface-500" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-surface-900 truncate">{tx.merchant}</p>
-                  <p className="text-xs text-surface-500">{tx.category} · {tx.date}</p>
+                  <p className="text-sm font-medium text-surface-900 dark:text-white truncate">{tx.merchant}</p>
+                  <p className="text-xs text-surface-500 dark:text-surface-400 dark:text-surface-500">{tx.category} · {tx.date}</p>
                 </div>
-                <p className="text-sm font-semibold text-surface-900">
+                <p className="text-sm font-semibold text-surface-900 dark:text-white">
                   {tx.amount.toLocaleString("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 })}
                 </p>
               </div>
@@ -631,7 +638,7 @@ export default function HomePage({ backend, onNavigate }) {
 
           <div className="animate-slide-up stagger-2 order-1 lg:order-2 lg:sticky lg:top-20">
             <div className="flex items-center justify-between mb-3">
-              <h2 className="text-base font-semibold text-surface-900">Your Cards</h2>
+              <h2 className="text-base font-semibold text-surface-900 dark:text-white">Your Cards</h2>
               <button
                 type="button"
                 onClick={() => setShowAddCardForm((value) => !value)}
@@ -641,12 +648,12 @@ export default function HomePage({ backend, onNavigate }) {
               </button>
             </div>
             {showAddCardForm && (
-              <form onSubmit={handleAddCard} className="mb-3 bg-white rounded-xl p-3 shadow-card border border-gray-100 space-y-2">
+              <form onSubmit={handleAddCard} className="mb-3 bg-white dark:bg-surface-800 rounded-xl p-3 shadow-card border border-gray-100 dark:border-surface-700 space-y-2">
                 <input
                   value={newCard.name}
                   onChange={(event) => handleNewCardInput("name", event.target.value)}
                   placeholder="Card name (e.g. Platinum Reserve)"
-                  className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm"
+                  className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-surface-600 bg-white dark:bg-surface-700 text-sm dark:text-white dark:placeholder:text-surface-400"
                 />
                 <div className="grid grid-cols-2 gap-2">
                   <input
@@ -654,13 +661,13 @@ export default function HomePage({ backend, onNavigate }) {
                     onChange={(event) => handleNewCardInput("lastFour", event.target.value)}
                     placeholder="Last 4 digits"
                     maxLength={4}
-                    className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm"
+                    className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-surface-600 bg-white dark:bg-surface-700 text-sm dark:text-white dark:placeholder:text-surface-400"
                   />
                   <input
                     value={newCard.balanceInr}
                     onChange={(event) => handleNewCardInput("balanceInr", event.target.value)}
                     placeholder="Balance (INR)"
-                    className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm"
+                    className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-surface-600 bg-white dark:bg-surface-700 text-sm dark:text-white dark:placeholder:text-surface-400"
                   />
                 </div>
                 <button type="submit" className="w-full bg-primary-600 text-white text-xs font-semibold py-2 rounded-lg">
